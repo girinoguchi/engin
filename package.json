@@ -11,6 +11,7 @@
     "build:standalone-assets": "cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && mkdir -p .next/standalone/wordpress/seed && cp -r wordpress/seed .next/standalone/wordpress/ && cp wordpress/seed/demo-users.json .next/standalone/wordpress/seed/demo-users.json 2>/dev/null || true && mkdir -p .data && (test -f .next/standalone/.data/demo-users.json && test ! -f .data/demo-users.json && cp .next/standalone/.data/demo-users.json .data/demo-users.json || true)",
     "start": "cd .next/standalone && TELECAREER_PROJECT_ROOT=\"$(cd ../.. && pwd)\" DEMO_PUBLIC_HTTPS=1 DEMO_DEBUG=1 HOSTNAME=0.0.0.0 PORT=3000 node server.js",
     "preview": "npm run build && npm run start",
+    "mobile": "bash scripts/start-mobile-preview.sh",
     "lint": "next lint",
     "docker:demo": "docker compose up --build",
     "docker:demo:detach": "docker compose up --build -d",

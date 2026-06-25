@@ -2,8 +2,8 @@
   "install": "npm install",
   "terminals": [
     {
-      "name": "dev-server",
-      "command": "npm run dev"
+      "name": "mobile-preview",
+      "command": "npm run mobile"
     }
   ]
 }
