@@ -98,6 +98,27 @@ npm run docker:demo:detach
 
 ホスティング先で **Supabase の環境変数を設定しなければ** 自動的にデモモードで動作します。本番運用時のみ `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` を設定してください。
 
+### 求人データの自動更新（WordPress 連携）
+
+Next.js の求人ページ（`/jobs`）は WordPress の REST API からデータを取得します。
+
+```env
+WORDPRESS_API_URL=http://localhost:8888/wp-json
+REVALIDATE_SECRET=ランダムな秘密文字列
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+WordPress 側（wp-env 利用時）:
+
+```env
+NEXT_REVALIDATE_URL=http://localhost:3000/api/revalidate
+REVALIDATE_SECRET=上と同じ秘密文字列
+```
+
+- WordPress で案件を保存・削除すると、Next.js のキャッシュが**即時再検証**されます
+- ブラウザを開いたままでも **30秒ごと** に最新データへ自動更新されます
+- タブを戻したときも自動で再取得します
+
 ## ルーティング
 
 | パス | 説明 |

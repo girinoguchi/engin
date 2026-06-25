@@ -72,13 +72,44 @@ export const REQUEST_STATUSES = ["未対応", "対応中", "完了"] as const;
 
 export interface Job {
   id: string;
+  slug: string;
   created_at: string;
   title: string;
   category: string;
   job_type: string;
+  body: string;
   location: string | null;
+  pay: string | null;
   pay_type: string | null;
-  pay_amount: string | null;
-  description: string | null;
+  wage_min: number | null;
+  work_period: string | null;
+  headcount: number | null;
+  deadline: string | null;
+  tags: string[];
   is_active: boolean;
 }
+
+export type JobFilters = {
+  q?: string;
+  category?: string;
+  jobType?: string;
+  area?: string;
+  payType?: string;
+  wageMin?: string;
+  inexperienced?: string;
+  sort?: string;
+};
+
+export const JOB_AREA_OPTIONS = ["東京都", "大阪府", "神奈川県", "愛知県", "福岡県", "その他"] as const;
+export const JOB_WAGE_MIN_OPTIONS = [
+  { value: "", label: "指定なし" },
+  { value: "1000", label: "1,000円以上" },
+  { value: "1200", label: "1,200円以上" },
+  { value: "1500", label: "1,500円以上" },
+  { value: "2000", label: "2,000円以上" },
+] as const;
+export const JOB_SORT_OPTIONS = [
+  { value: "new", label: "新着順" },
+  { value: "deadline", label: "締切が近い順" },
+  { value: "wage", label: "時給が高い順" },
+] as const;

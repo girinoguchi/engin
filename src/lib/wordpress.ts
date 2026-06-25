@@ -1,5 +1,7 @@
+import { getWordPressApiUrl } from "./wordpress/config";
+
 export function getWordPressAdminUrl(): string {
-  const apiUrl = process.env.WORDPRESS_API_URL;
+  const apiUrl = getWordPressApiUrl();
   if (apiUrl) {
     return `${apiUrl.replace(/\/wp-json\/?$/, "")}/wp-admin`;
   }

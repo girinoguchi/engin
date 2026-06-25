@@ -72,13 +72,63 @@ function tcj_register_meta() {
             'type'         => $type,
             'single'       => true,
             'show_in_rest' => true,
-            'auth_callback' => function () {
-                return current_user_can('edit_posts');
+            'auth_callback' => function ($allowed, $meta_key, $post_id) {
+                if (get_post_status($post_id) === 'publish') {
+                    return true;
+                }
+                return current_user_can('edit_post', $post_id);
             },
         ));
     }
 }
 add_action('init', 'tcj_register_meta');
+
+/** Next.js のキャッシュを再検証する（案件の保存・削除時） */
+function tcj_get_revalidate_endpoint() {
+    $url = getenv('NEXT_REVALIDATE_URL');
+    if (!$url) {
+        $url = get_option('tcj_next_revalidate_url');
+    }
+    return $url ? rtrim($url, '/') : '';
+}
+
+function tcj_get_revalidate_secret() {
+    $secret = getenv('REVALIDATE_SECRET');
+    if (!$secret) {
+        $secret = get_option('tcj_revalidate_secret');
+    }
+    return $secret ? (string) $secret : '';
+}
+
+function tcj_notify_next_revalidate($post_id) {
+    if (wp_is_post_revision($post_id)) {
+        return;
+    }
+    $post = get_post($post_id);
+    if (!$post || $post->post_type !== 'job') {
+        return;
+    }
+
+    $endpoint = tcj_get_revalidate_endpoint();
+    $secret = tcj_get_revalidate_secret();
+    if ($endpoint === '' || $secret === '') {
+        return;
+    }
+
+    wp_remote_post($endpoint, array(
+        'timeout' => 5,
+        'blocking' => false,
+        'headers' => array('Content-Type' => 'application/json'),
+        'body' => wp_json_encode(array(
+            'secret' => $secret,
+            'tag' => 'jobs',
+        )),
+    ));
+}
+add_action('save_post_job', 'tcj_notify_next_revalidate', 20);
+add_action('deleted_post', function ($post_id) {
+    tcj_notify_next_revalidate($post_id);
+}, 20);
 
 /** 入力用メタボックスを追加 */
 function tcj_add_meta_box() {
