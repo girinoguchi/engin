@@ -33,10 +33,13 @@ export function demoSessionCookieOptions(req: Request) {
     requestSecure = false;
   }
   const secure = forwardedSecure || requestSecure;
+  // HTTPS配信時（クラウドプレビューのiframe等クロスサイト文脈を含む）は
+  // SameSite=None でないとブラウザがCookieをブロックしログインループになる。
+  // SameSite=None は Secure 必須のため、HTTPS時のみ None、HTTP(ローカル)時は Lax。
   return {
     path: "/",
     httpOnly: true,
-    sameSite: "lax" as const,
+    sameSite: (secure ? "none" : "lax") as "none" | "lax",
     secure,
     maxAge: 60 * 60 * 24 * 30,
   };
