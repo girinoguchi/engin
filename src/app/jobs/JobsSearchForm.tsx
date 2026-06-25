@@ -25,7 +25,6 @@ export function JobsSearchForm({ filters }: { filters: JobFilters }) {
     if (next.jobType) params.set("jobType", next.jobType);
     if (next.area) params.set("area", next.area);
     if (next.payType) params.set("payType", next.payType);
-    if (next.inexperienced) params.set("inexperienced", next.inexperienced);
     if (next.sort && next.sort !== "new") params.set("sort", next.sort);
     const query = params.toString();
     return query ? `/jobs?${query}` : "/jobs";
@@ -39,9 +38,6 @@ export function JobsSearchForm({ filters }: { filters: JobFilters }) {
     const area = (form.querySelector('[name="area"]') as HTMLSelectElement)?.value ?? "";
     const payType = (form.querySelector('[name="payType"]') as HTMLSelectElement)?.value ?? "";
     const sort = (form.querySelector('[name="sort"]') as HTMLSelectElement)?.value ?? "new";
-    const inexperienced = (form.querySelector('[name="inexperienced"]') as HTMLInputElement)?.checked
-      ? "1"
-      : "";
 
     const params = new URLSearchParams();
     if (filters.jobType) params.set("jobType", filters.jobType);
@@ -49,7 +45,6 @@ export function JobsSearchForm({ filters }: { filters: JobFilters }) {
     if (category) params.set("category", category);
     if (area) params.set("area", area);
     if (payType) params.set("payType", payType);
-    if (inexperienced) params.set("inexperienced", inexperienced);
     if (sort && sort !== "new") params.set("sort", sort);
     router.push(`/jobs?${params.toString()}`);
   };
@@ -129,7 +124,7 @@ export function JobsSearchForm({ filters }: { filters: JobFilters }) {
           </button>
         </div>
 
-        {/* サブ行: 給与・並び・未経験・リセット */}
+        {/* サブ行: 給与・並び・リセット */}
         <div className="flex flex-wrap items-center gap-2 pt-0.5 border-t border-ink/10">
           <select name="payType" defaultValue={filters.payType ?? ""} className={`${inputSm} w-auto min-w-[7.5rem] flex-1 sm:flex-none`}>
             <option value="">給与形態</option>
@@ -146,15 +141,6 @@ export function JobsSearchForm({ filters }: { filters: JobFilters }) {
               </option>
             ))}
           </select>
-          <label className="flex items-center gap-1.5 cursor-pointer text-xs font-bold text-telecareer-ink whitespace-nowrap shrink-0">
-            <input
-              type="checkbox"
-              name="inexperienced"
-              defaultChecked={filters.inexperienced === "1"}
-              className="w-3.5 h-3.5 accent-telecareer-orange"
-            />
-            未経験OK
-          </label>
           <Link
             href="/jobs"
             className="text-xs font-bold text-gray-500 hover:text-telecareer-coral whitespace-nowrap ml-auto"
