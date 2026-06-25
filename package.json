@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "demo": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "next build && npm run build:standalone-assets",
+    "build:standalone-assets": "cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && mkdir -p .next/standalone/wordpress/seed && cp -r wordpress/seed .next/standalone/wordpress/",
+    "start": "cd .next/standalone && node server.js",
     "lint": "next lint",
     "docker:demo": "docker compose up --build",
     "docker:demo:detach": "docker compose up --build -d",
