@@ -3,17 +3,27 @@ import { redirect } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LoginForm } from "./LoginForm";
+import { DemoLoginForm } from "./DemoLoginForm";
 import { getCurrentUser } from "@/lib/auth";
+import { isDemoMode } from "@/lib/demo-auth";
 
 type LoginPageProps = {
-  searchParams?: { redirect?: string };
+  searchParams?: { redirect?: string; error?: string };
 };
+
+function safeRedirect(value?: string): string {
+  if (value && value.startsWith("/") && !value.startsWith("//")) return value;
+  return "/jobs";
+}
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const user = await getCurrentUser();
   if (user) {
-    redirect(searchParams?.redirect || "/jobs");
+    redirect(safeRedirect(searchParams?.redirect));
   }
+
+  const demo = isDemoMode();
+  const redirectTo = safeRedirect(searchParams?.redirect);
 
   return (
     <div className="min-h-screen flex flex-col bg-telecareer-surface">
@@ -23,9 +33,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <h1 className="mt-4 text-3xl font-black text-telecareer-ink mb-6">
           <span className="tc-marker">ログイン</span>
         </h1>
-        <Suspense fallback={<div className="tc-card p-6 text-sm text-gray-500">読み込み中...</div>}>
-          <LoginForm />
-        </Suspense>
+        {demo ? (
+          <DemoLoginForm redirectTo={redirectTo} errorCode={searchParams?.error} />
+        ) : (
+          <Suspense fallback={<div className="tc-card p-6 text-sm text-gray-500">読み込み中...</div>}>
+            <LoginForm />
+          </Suspense>
+        )}
       </main>
       <Footer />
     </div>

@@ -46,18 +46,46 @@ export function isSecureRequest(req: Request): boolean {
   return false;
 }
 
-export function demoSessionCookieOptions(req: Request) {
-  const secure = isSecureRequest(req);
-  // HTTPS配信時（クラウドプレビューのiframe等クロスサイト文脈を含む）は
-  // SameSite=None でないとブラウザがCookieをブロックしログインループになる。
-  // SameSite=None は Secure 必須のため、HTTPS時のみ None、HTTP(ローカル)時は Lax。
+export type DemoCookieOptions = {
+  path: string;
+  httpOnly: boolean;
+  sameSite: "lax" | "none";
+  secure: boolean;
+  maxAge: number;
+};
+
+function buildCookieOptions(secure: boolean): DemoCookieOptions {
+  // iOS Safari/Brave(WebKit)は SameSite=None の Cookie をトップレベル遷移でも
+  // 取りこぼすことがあるため、同一サイトのトップレベル遷移で確実に送られる Lax を使う。
+  // （ログイン後の /jobs・/mypage 遷移はいずれも同一サイトのトップレベルGET）
   return {
     path: "/",
     httpOnly: true,
-    sameSite: (secure ? "none" : "lax") as "none" | "lax",
+    sameSite: "lax",
     secure,
     maxAge: 60 * 60 * 24 * 30,
   };
+}
+
+export function demoSessionCookieOptions(req: Request): DemoCookieOptions {
+  return buildCookieOptions(isSecureRequest(req));
+}
+
+export function isSecureFromHeaders(get: (name: string) => string | null): boolean {
+  if (process.env.DEMO_PUBLIC_HTTPS === "1") return true;
+  const xfProto = (get("x-forwarded-proto") ?? "").split(",")[0].trim();
+  if (xfProto === "https") return true;
+  const forwarded = get("forwarded") ?? "";
+  if (/proto=https/i.test(forwarded)) return true;
+  if ((get("x-forwarded-ssl") ?? "").toLowerCase() === "on") return true;
+  if (get("x-forwarded-protocol") === "https") return true;
+  return false;
+}
+
+export function demoSessionCookieOptionsFromHeaders(
+  get: (name: string) => string | null
+): DemoCookieOptions {
+  return buildCookieOptions(isSecureFromHeaders(get));
 }
 
 export function encodeDemoSessionCookie(session: DemoSession): string {
