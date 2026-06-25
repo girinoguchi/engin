@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run sync:media && next dev",
-    "demo": "npm run sync:media && next dev",
+    "dev": "npm run sync:media && next dev -H 0.0.0.0 -p 3000",
+    "dev:clean": "rm -rf .next && npm run dev",
+    "demo": "npm run dev:clean",
     "sync:media": "mkdir -p public/img/media && cp -rn wordpress/engine/assets/img/media/. public/img/media/ 2>/dev/null || true",
     "build": "npm run sync:media && next build && npm run build:standalone-assets",
     "build:standalone-assets": "cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public && mkdir -p .next/standalone/wordpress/seed && cp -r wordpress/seed .next/standalone/wordpress/",
