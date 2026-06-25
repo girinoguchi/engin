@@ -48,7 +48,7 @@ export default async function ContactPage({
 
         <p className="mt-6 text-center text-sm text-gray-600">
           すでに会員の方は
-          <Link href="/login?redirect=/mypage" className="link-accent">
+          <Link href="/login" className="link-accent">
             ログイン
           </Link>
           してマイページからお問い合わせください。
