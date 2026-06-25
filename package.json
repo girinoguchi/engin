@@ -4,9 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "demo": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "docker:demo": "docker compose up --build",
+    "docker:demo:detach": "docker compose up --build -d",
     "wp:start": "DOCKER_BUILDKIT=0 COMPOSE_DOCKER_CLI_BUILD=0 wp-env start",
     "wp:stop": "wp-env stop",
     "wp:destroy": "wp-env destroy",

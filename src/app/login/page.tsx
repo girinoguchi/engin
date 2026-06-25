@@ -44,7 +44,7 @@ export default function LoginPage() {
           setError((data.error as string) || "ログインに失敗しました。再度お試しください。");
           return;
         }
-        router.push("/jobs");
+        router.push("/talents");
         router.refresh();
         return;
       }
@@ -58,7 +58,7 @@ export default function LoginPage() {
         setError(signInError.message + " 内容を修正して再度送信してください。");
         return;
       }
-      router.push("/jobs");
+      router.push("/talents");
       router.refresh();
     } catch (err) {
       setError(

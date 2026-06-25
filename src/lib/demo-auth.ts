@@ -10,8 +10,23 @@ export type DemoSession = {
   role: "member" | "admin";
 };
 
+function hasValidSupabaseUrl(url: string | undefined): boolean {
+  if (!url || url.includes("your_supabase")) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 export function isDemoMode(): boolean {
-  return !process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!hasValidSupabaseUrl(url) || !key || key.includes("your_supabase")) {
+    return true;
+  }
+  return false;
 }
 
 export function parseDemoCookie(cookieHeader: string | null): DemoSession | null {

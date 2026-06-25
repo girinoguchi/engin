@@ -58,6 +58,46 @@ npm run dev
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
 
+## デモプレビュー（Supabase なし）
+
+Supabase の設定なしで UI をブラウザ確認したい場合は、**`.env.local` を作らない**（または Supabase の値を空にする）だけでデモモードが有効になります。
+
+### ローカルで起動
+
+```bash
+npm install
+npm run demo
+```
+
+### Docker で起動（推奨・常時プレビュー向け）
+
+サーバーに Docker があれば、依存関係のインストールから本番ビルド・起動まで一発で行えます。
+
+```bash
+npm run docker:demo
+```
+
+バックグラウンドで起動する場合:
+
+```bash
+npm run docker:demo:detach
+```
+
+起動後は **http://サーバーのIP:3000** でアクセスできます。VPS や社内サーバーに置いておけば、毎回スクリーンショットを撮らなくてもブラウザで確認できます。
+
+### デモ用テストアカウント
+
+| 種別 | メール | パスワード |
+|------|--------|------------|
+| 会員 | `member@demo.local` | `demo123` |
+| 管理者 | `admin@demo.local` | `demo123` |
+
+※ 管理画面（`/admin`）はデモでは未対応です。人材名簿・ログイン・会員登録の動作確認用です。
+
+### Vercel などへのデプロイ
+
+ホスティング先で **Supabase の環境変数を設定しなければ** 自動的にデモモードで動作します。本番運用時のみ `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` を設定してください。
+
 ## ルーティング
 
 | パス | 説明 |
