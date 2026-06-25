@@ -147,13 +147,6 @@ export const STEPS = [
   },
 ] as const;
 
-export const ABOUT_POINTS = [
-  { h: "実在する人材会社が運営", p: "人材派遣・有料職業紹介の許可を受けた事業者です。", c: "bg-telecareer-yellow" },
-  { h: "テレビ業界に深いネットワーク", p: "1986年創業の親会社と2011年創業のI.T.S.。だから紹介する現場が“本物”です。", c: "bg-telecareer-orange" },
-  { h: "未経験からのスタートを多数サポート", p: "もともと未経験の人を数多く受け入れてきた会社。だから「未経験OK」は本当です。", c: "bg-telecareer-coral" },
-  { h: "相談できるサポート体制", p: "現場経験のあるスタッフが在籍。業界のことを知る人がそばにいます。", c: "bg-telecareer-green" },
-];
-
 export const COMPANY_INFO: Record<string, string> = {
   商号: "株式会社フォーミュレーションI.T.S.",
   設立: "2011年",

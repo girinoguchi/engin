@@ -4,7 +4,6 @@ import { Footer } from "@/components/Footer";
 import { MediaLogoMarquee } from "@/components/MediaLogoMarquee";
 import { CategoryCard } from "@/components/CategoryCard";
 import {
-  ABOUT_POINTS,
   CATEGORIES,
   COMPANY_INFO,
   STEPS,
@@ -189,21 +188,10 @@ export default function HomePage() {
 
             <div className="grid gap-8 lg:grid-cols-5 items-start">
               <div className="lg:col-span-3">
-                <p className="text-gray-700 leading-relaxed mb-6">
+                <p className="text-gray-700 leading-relaxed">
                   運営は<strong className="text-telecareer-ink">株式会社フォーミュレーションI.T.S.</strong>
                   。2011年からテレビ局や制作会社に人材を送り出してきた、メディア業界専門の人材会社です。親会社は1986年創業、テレビ・CM業界で活躍するリサーチ会社「フォーミュレーション」。長年つちかったネットワークで、テレビ番組・ドラマ・映画・大手CM・配信・イベントなど“本物の現場”とつながっています。
                 </p>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  {ABOUT_POINTS.map((ap) => (
-                    <div key={ap.h} className="tc-card-soft p-5 flex items-start gap-3">
-                      <span className={`w-9 h-9 rounded-xl border-2 border-ink shrink-0 ${ap.c}`} />
-                      <div>
-                        <h3 className="font-bold text-telecareer-ink text-sm">{ap.h}</h3>
-                        <p className="mt-1 text-xs text-gray-600 leading-relaxed">{ap.p}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
 
               <div className="lg:col-span-2">
