@@ -14,10 +14,10 @@
       "birthdate": "2000-01-15"
     },
     {
-      "email": "admin@demo.local",
-      "password": "demo123",
+      "email": "admin",
+      "password": "admin",
       "company_name": "デモ運営",
-      "contact_name": "デモ 管理者",
+      "contact_name": "管理者",
       "role": "admin",
       "program_genres": ["バラエティ"],
       "needed_roles": ["AD"],

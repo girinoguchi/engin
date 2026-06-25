@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { loadClientSession, saveClientSession } from "@/lib/demo-client-session";
+import { loadClientSession, saveClientSession, demoAfterLoginPath } from "@/lib/demo-client-session";
 
-const AFTER_LOGIN = "/jobs";
+const AFTER_LOGIN_MEMBER = "/jobs";
 
 export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
   const [submitting, setSubmitting] = useState(false);
@@ -19,8 +19,9 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
   );
 
   useEffect(() => {
-    if (loadClientSession()) {
-      window.location.assign(AFTER_LOGIN);
+    const session = loadClientSession();
+    if (session) {
+      window.location.assign(demoAfterLoginPath(session.role));
     }
   }, []);
 
@@ -55,8 +56,10 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
       }
       if (data.session) {
         saveClientSession(data.session);
+        window.location.assign(demoAfterLoginPath(data.session.role));
+      } else {
+        window.location.assign(AFTER_LOGIN_MEMBER);
       }
-      window.location.assign(AFTER_LOGIN);
     } catch {
       setError("通信に失敗しました。電波の良い場所で再度お試しください。");
       setSubmitting(false);
@@ -80,14 +83,15 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
           </div>
         )}
         <div>
-          <label className="tc-label">メールアドレス</label>
+          <label className="tc-label">メールアドレス / ID</label>
           <input
-            type="email"
+            type="text"
             required
-            autoComplete="email"
+            autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="tc-input"
+            placeholder="member@demo.local または admin"
           />
         </div>
         <div>

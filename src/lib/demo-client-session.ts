@@ -47,6 +47,10 @@ export function clearClientSession(): void {
   }
 }
 
+export function demoAfterLoginPath(role: ClientSession["role"]): string {
+  return role === "admin" ? "/admin" : "/jobs";
+}
+
 /**
  * クライアント側のデモセッション状態。
  * Cookieをブロックするブラウザ(iOS Brave等)でもログイン状態を保持できる。

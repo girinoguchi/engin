@@ -1,9 +1,27 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { isDemoMode } from "@/lib/demo-auth";
 import type { RequestRow } from "@/lib/types";
 import { RequestStatusForm } from "./RequestStatusForm";
 
 export default async function AdminRequestsPage() {
+  if (isDemoMode()) {
+    return (
+      <div>
+        <Link href="/admin" className="text-sm link-accent mb-4 inline-block">
+          ← ダッシュボード
+        </Link>
+        <span className="tc-eyebrow bg-white">REQUESTS</span>
+        <h1 className="mt-3 text-2xl md:text-3xl font-black text-telecareer-ink mb-2 tc-section-heading">
+          依頼一覧
+        </h1>
+        <div className="tc-card-soft p-8 text-center mt-6 text-gray-600 text-sm">
+          デモ環境では依頼データはありません。本番環境（Supabase 接続後）でご確認ください。
+        </div>
+      </div>
+    );
+  }
+
   const supabase = await createClient();
   const { data: requests } = await supabase
     .from("requests")

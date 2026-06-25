@@ -4,7 +4,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LoginForm } from "./LoginForm";
 import { DemoLoginForm } from "./DemoLoginForm";
-import { getCurrentUser } from "@/lib/auth";
+import { getCurrentProfile, getCurrentUser } from "@/lib/auth";
 import { isDemoMode } from "@/lib/demo-auth";
 
 type LoginPageProps = {
@@ -14,7 +14,8 @@ type LoginPageProps = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const user = await getCurrentUser();
   if (user) {
-    redirect("/jobs");
+    const profile = await getCurrentProfile();
+    redirect(profile?.role === "admin" ? "/admin" : "/jobs");
   }
 
   const demo = isDemoMode();
