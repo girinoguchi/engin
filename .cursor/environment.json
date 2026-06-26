@@ -9,6 +9,10 @@
     {
       "name": "mobile-preview",
       "command": "npm run mobile"
+    },
+    {
+      "name": "tunnel-watchdog",
+      "command": "bash scripts/run-tunnel-watchdog.sh"
     }
   ]
 }

@@ -38,6 +38,10 @@ export function DemoBanner() {
             <span className="block mt-0.5 font-normal text-amber-900/80">
               ※ 初回は「Click to Continue」をタップしてください
             </span>
+          ) : mobileUrl.includes("trycloudflare.com") ? (
+            <span className="block mt-0.5 font-normal text-amber-900/80">
+              ※ Bad Gateway が出たらこのバナーの URL を開き直してください
+            </span>
           ) : null}
         </p>
       ) : null}
