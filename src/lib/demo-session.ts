@@ -91,3 +91,12 @@ export function demoSessionCookieOptionsFromHeaders(
 export function encodeDemoSessionCookie(session: DemoSession): string {
   return Buffer.from(JSON.stringify(session), "utf8").toString("base64url");
 }
+
+/** ログアウト時に login と同じ属性で Cookie を確実に削除する */
+export function clearDemoSessionCookieOnResponse(
+  response: { cookies: { set: (name: string, value: string, options: DemoCookieOptions) => void } },
+  req: Request
+): void {
+  const options = demoSessionCookieOptions(req);
+  response.cookies.set("demo_session", "", { ...options, maxAge: 0 });
+}

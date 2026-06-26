@@ -12,13 +12,15 @@ type LoginPageProps = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-  const user = await getCurrentUser();
-  if (user) {
-    const profile = await getCurrentProfile();
-    redirect(profile?.role === "admin" ? "/admin" : "/jobs");
-  }
-
   const demo = isDemoMode();
+
+  if (!demo) {
+    const user = await getCurrentUser();
+    if (user) {
+      const profile = await getCurrentProfile();
+      redirect(profile?.role === "admin" ? "/admin" : "/jobs");
+    }
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-telecareer-surface">

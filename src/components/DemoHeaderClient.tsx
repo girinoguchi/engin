@@ -1,16 +1,20 @@
 "use client";
 
 import { Header } from "./Header";
-import { clearClientSession, useDemoClientSession } from "@/lib/demo-client-session";
+import { clearClientSession, markLoggedOut, useDemoClientSession } from "@/lib/demo-client-session";
 
 export function DemoHeaderClient() {
   const { session } = useDemoClientSession();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     clearClientSession();
-    // Cookieも念のためクリア（許可されている環境向け）
-    fetch("/api/demo/logout", { method: "POST" }).catch(() => {});
-    window.location.assign("/");
+    markLoggedOut();
+    try {
+      await fetch("/api/demo/logout", { method: "POST", credentials: "include" });
+    } catch {
+      // ignore
+    }
+    window.location.assign("/login");
   };
 
   const user = session ? { email: session.email } : undefined;
