@@ -10,7 +10,7 @@ type AdminModalShellProps = {
 };
 
 /**
- * 管理画面用モーダル。iOS Safari でも中身までスクロールできる構造。
+ * 管理画面用モーダル。スマホでもフォーム末尾までスクロールし、下部ボタンは常に表示。
  */
 export function AdminModalShell({ title, onClose, children, footer }: AdminModalShellProps) {
   useEffect(() => {
@@ -25,6 +25,7 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
     document.body.style.left = "0";
     document.body.style.right = "0";
     document.body.style.width = "100%";
+    document.body.style.overflow = "hidden";
 
     return () => {
       document.removeEventListener("keydown", onKey);
@@ -33,42 +34,50 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
       document.body.style.left = "";
       document.body.style.right = "";
       document.body.style.width = "";
+      document.body.style.overflow = "";
       window.scrollTo(0, scrollY);
     };
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-ink/40" role="dialog" aria-modal="true" aria-label={title}>
-      <div
-        className="h-full overflow-y-auto overscroll-contain [-webkit-overflow-scrolling:touch]"
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label={title}
+    >
+      <button
+        type="button"
+        className="absolute inset-0 bg-ink/40"
         onClick={onClose}
+        aria-label="モーダルを閉じる"
+      />
+
+      <div
+        className="relative z-10 tc-card w-full max-w-2xl max-h-[100dvh] sm:max-h-[min(90dvh,48rem)] flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl p-0"
+        onClick={(e) => e.stopPropagation()}
       >
-        <div className="min-h-full flex flex-col items-center px-3 pt-4 pb-28 sm:px-4 sm:pt-8 sm:pb-16">
-          <div
-            className="tc-card w-full max-w-2xl p-5 sm:p-8 flex flex-col"
-            onClick={(e) => e.stopPropagation()}
+        <div className="flex items-center justify-between shrink-0 px-5 pt-5 pb-3 sm:px-8 sm:pt-6 border-b border-ink/10">
+          <h2 className="text-lg sm:text-xl font-black text-telecareer-ink pr-2">{title}</h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-400 hover:text-ink text-2xl leading-none font-bold shrink-0 p-1"
+            aria-label="閉じる"
           >
-            <div className="flex items-center justify-between mb-4 sm:mb-5 shrink-0">
-              <h2 className="text-lg sm:text-xl font-black text-telecareer-ink pr-2">{title}</h2>
-              <button
-                type="button"
-                onClick={onClose}
-                className="text-gray-400 hover:text-ink text-2xl leading-none font-bold shrink-0 p-1"
-                aria-label="閉じる"
-              >
-                ×
-              </button>
-            </div>
-
-            <div className="min-h-0">{children}</div>
-
-            {footer ? (
-              <div className="sticky bottom-0 -mx-5 sm:-mx-8 mt-4 px-5 sm:px-8 pt-4 pb-1 bg-white border-t-2 border-ink/10 shrink-0">
-                {footer}
-              </div>
-            ) : null}
-          </div>
+            ×
+          </button>
         </div>
+
+        <div className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y px-5 py-4 sm:px-8 [-webkit-overflow-scrolling:touch]">
+          {children}
+        </div>
+
+        {footer ? (
+          <div className="shrink-0 border-t-2 border-ink/10 px-5 py-4 sm:px-8 bg-white pb-[max(1rem,env(safe-area-inset-bottom,0px))]">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );
