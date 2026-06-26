@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { loadClientSession, saveClientSession, demoAfterLoginPath } from "@/lib/demo-client-session";
+import { clearLoggedOutFlag, demoAfterLoginPath, isLoggedOutFlagSet, saveClientSession, useDemoClientSession } from "@/lib/demo-client-session";
 
 const AFTER_LOGIN_MEMBER = "/jobs";
 
 export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
+  const { session, loading } = useDemoClientSession();
   const [submitting, setSubmitting] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,11 +20,12 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
   );
 
   useEffect(() => {
-    const session = loadClientSession();
+    if (loading) return;
+    if (isLoggedOutFlagSet()) return;
     if (session) {
       window.location.assign(demoAfterLoginPath(session.role));
     }
-  }, []);
+  }, [loading, session]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +57,7 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
         return;
       }
       if (data.session) {
+        clearLoggedOutFlag();
         saveClientSession(data.session);
         window.location.assign(demoAfterLoginPath(data.session.role));
       } else {
@@ -91,7 +94,6 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="tc-input"
-            placeholder="member@demo.local または admin"
           />
         </div>
         <div>

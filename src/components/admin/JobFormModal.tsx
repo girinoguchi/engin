@@ -127,7 +127,6 @@ export function JobFormModal({
               value={form.title}
               onChange={(e) => set("title", e.target.value)}
               className="tc-input"
-              placeholder="例: TBS「ラヴィット！」AD募集"
             />
           </div>
 
@@ -170,7 +169,6 @@ export function JobFormModal({
                 value={form.location}
                 onChange={(e) => set("location", e.target.value)}
                 className="tc-input"
-                placeholder="例: 東京都"
               />
             </div>
             <div>
@@ -193,7 +191,6 @@ export function JobFormModal({
                 value={form.pay}
                 onChange={(e) => set("pay", e.target.value)}
                 className="tc-input"
-                placeholder="例: 月給22万円〜"
               />
             </div>
             <div>
@@ -221,7 +218,6 @@ export function JobFormModal({
                 value={form.wage_min}
                 onChange={(e) => set("wage_min", e.target.value)}
                 className="tc-input"
-                placeholder="例: 1200"
               />
             </div>
             <div>
@@ -231,7 +227,6 @@ export function JobFormModal({
                 value={form.work_period}
                 onChange={(e) => set("work_period", e.target.value)}
                 className="tc-input"
-                placeholder="例: 中長期"
               />
             </div>
             <div>
@@ -252,7 +247,6 @@ export function JobFormModal({
               value={form.tags}
               onChange={(e) => set("tags", e.target.value)}
               className="tc-input"
-              placeholder="未経験歓迎 AD バラエティ"
             />
           </div>
 
@@ -263,7 +257,6 @@ export function JobFormModal({
               onChange={(e) => set("body", e.target.value)}
               rows={6}
               className="tc-input"
-              placeholder="仕事内容や応募条件などを入力してください。"
             />
           </div>
 

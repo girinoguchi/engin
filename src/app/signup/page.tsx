@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { isDemoMode } from "@/lib/demo-auth";
-import { saveClientSession } from "@/lib/demo-client-session";
+import { clearLoggedOutFlag, saveClientSession } from "@/lib/demo-client-session";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { JOB_CATEGORY_OPTIONS, USER_TYPE_OPTIONS } from "@/lib/types";
@@ -84,6 +84,7 @@ export default function SignupPage() {
         }
         // Cookieに依存せず localStorage に保存（iOS Brave等のCookieブロック対策）
         if (data.session) {
+          clearLoggedOutFlag();
           saveClientSession(data.session);
         }
         window.location.assign("/mypage");

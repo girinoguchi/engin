@@ -106,7 +106,6 @@ export function AccountFormModal({
             disabled={isEdit}
             onChange={(e) => setEmail(e.target.value)}
             className="tc-input disabled:bg-gray-100 disabled:text-gray-500"
-            placeholder="例: user@example.com"
           />
         </div>
         <div>
@@ -158,7 +157,6 @@ export function AccountFormModal({
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="tc-input"
-            placeholder={isEdit ? "変更しない場合は空欄" : ""}
           />
         </div>
       </form>

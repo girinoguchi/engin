@@ -15,7 +15,10 @@ export type ClientSession = {
 };
 
 const KEY = "demo_session_v1";
+const LOGGED_OUT_KEY = "demo_logged_out";
 const EVENT = "demo-session-change";
+
+let syncPromise: Promise<ClientSession | null> | null = null;
 
 export function saveClientSession(session: ClientSession): void {
   try {
@@ -47,29 +50,86 @@ export function clearClientSession(): void {
   }
 }
 
+export function markLoggedOut(): void {
+  try {
+    sessionStorage.setItem(LOGGED_OUT_KEY, "1");
+  } catch {
+    // ignore
+  }
+}
+
+export function clearLoggedOutFlag(): void {
+  try {
+    sessionStorage.removeItem(LOGGED_OUT_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+export function isLoggedOutFlagSet(): boolean {
+  try {
+    return sessionStorage.getItem(LOGGED_OUT_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function demoAfterLoginPath(role: ClientSession["role"]): string {
   return role === "admin" ? "/admin" : "/jobs";
+}
+
+/** Cookie → localStorage 同期（重複リクエストは1本にまとめる） */
+export async function syncClientSessionFromCookie(): Promise<ClientSession | null> {
+  if (isLoggedOutFlagSet()) return null;
+
+  const existing = loadClientSession();
+  if (existing) return existing;
+
+  if (!syncPromise) {
+    syncPromise = fetch("/api/demo/session", { credentials: "include", cache: "no-store" })
+      .then((res) => res.json())
+      .then((data: { session?: ClientSession | null }) => {
+        if (data.session?.email) {
+          saveClientSession(data.session);
+          return data.session;
+        }
+        return null;
+      })
+      .catch(() => null)
+      .finally(() => {
+        syncPromise = null;
+      });
+  }
+
+  return syncPromise;
 }
 
 /**
  * クライアント側のデモセッション状態。
  * Cookieをブロックするブラウザ(iOS Brave等)でもログイン状態を保持できる。
- * `loading` はマウント前(SSR/初回)を表し、ハイドレーション不一致を避ける。
+ * `loading` は Cookie 同期完了まで true（リダイレクトループ防止）。
  */
 export function useDemoClientSession() {
   const [session, setSession] = useState<ClientSession | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setSession(loadClientSession());
-    setLoading(false);
+    let active = true;
 
-    const onChange = () => setSession(loadClientSession());
-    window.addEventListener(EVENT, onChange);
-    window.addEventListener("storage", onChange);
+    const refresh = () => setSession(loadClientSession());
+
+    syncClientSessionFromCookie().then(() => {
+      if (!active) return;
+      refresh();
+      setLoading(false);
+    });
+
+    window.addEventListener(EVENT, refresh);
+    window.addEventListener("storage", refresh);
     return () => {
-      window.removeEventListener(EVENT, onChange);
-      window.removeEventListener("storage", onChange);
+      active = false;
+      window.removeEventListener(EVENT, refresh);
+      window.removeEventListener("storage", refresh);
     };
   }, []);
 
