@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   JOB_CATEGORY_OPTIONS,
   JOB_TYPE_OPTIONS,
@@ -8,6 +8,7 @@ import {
   type Job,
 } from "@/lib/types";
 import { adminFetchJson } from "@/lib/demo-admin-client";
+import { AdminModalShell } from "./AdminModalShell";
 
 type FormState = {
   title: string;
@@ -57,18 +58,6 @@ export function JobFormModal({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
-
   const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -100,35 +89,36 @@ export function JobFormModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-ink/40 p-4 py-8"
-      onClick={onClose}
-    >
-      <div
-        className="tc-card w-full max-w-2xl p-6 md:p-8 my-auto"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl font-black text-telecareer-ink">
-            {isEdit ? "求人を編集" : "求人を新規登録"}
-          </h2>
+    <AdminModalShell
+      title={isEdit ? "求人を編集" : "求人を新規登録"}
+      onClose={onClose}
+      footer={
+        <div className="flex flex-col-reverse sm:flex-row gap-3">
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-ink text-2xl leading-none font-bold"
-            aria-label="閉じる"
+            className="btn-outline-coral px-7 py-2.5 font-bold w-full sm:w-auto"
           >
-            ×
+            キャンセル
+          </button>
+          <button
+            type="submit"
+            form="admin-job-form"
+            disabled={saving}
+            className="btn-cta px-7 py-2.5 font-bold disabled:opacity-50 w-full sm:w-auto"
+          >
+            {saving ? "保存中..." : isEdit ? "更新する" : "登録する"}
           </button>
         </div>
+      }
+    >
+      {error ? (
+        <div className="text-coral-a11y bg-telecareer-coral/10 border-2 border-telecareer-coral p-3 rounded-xl mb-4 text-sm">
+          {error}
+        </div>
+      ) : null}
 
-        {error ? (
-          <div className="text-coral-a11y bg-telecareer-coral/10 border-2 border-telecareer-coral p-3 rounded-xl mb-4 text-sm">
-            {error}
-          </div>
-        ) : null}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
+      <form id="admin-job-form" onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="tc-label">求人タイトル *</label>
             <input
@@ -290,25 +280,7 @@ export function JobFormModal({
               </span>
             </label>
           </div>
-
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={saving}
-              className="btn-cta px-7 py-2.5 font-bold disabled:opacity-50"
-            >
-              {saving ? "保存中..." : isEdit ? "更新する" : "登録する"}
-            </button>
-            <button
-              type="button"
-              onClick={onClose}
-              className="btn-outline-coral px-7 py-2.5 font-bold"
-            >
-              キャンセル
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+      </form>
+    </AdminModalShell>
   );
 }
