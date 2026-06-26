@@ -31,9 +31,14 @@ export function Header({ user, profile, onLogout }: HeaderProps) {
                   管理画面
                 </Link>
               ) : (
-                <Link href="/jobs" className="btn-cta px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold whitespace-nowrap tc-nav-tap">
-                  求人を探す
-                </Link>
+                <>
+                  <Link href="/jobs" className="btn-cta px-3 py-1.5 sm:px-4 sm:py-2 text-xs sm:text-sm font-bold whitespace-nowrap tc-nav-tap">
+                    求人を探す
+                  </Link>
+                  <Link href="/mypage" className="text-xs sm:text-sm nav-link-light whitespace-nowrap tc-nav-tap">
+                    マイページ
+                  </Link>
+                </>
               )}
               {profile?.role === "admin" && (
                 <>
