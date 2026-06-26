@@ -32,7 +32,9 @@ $logged_in = is_user_logged_in();
                         エンタメ業界で働きたい人の、エンジンになる。バラエティ・ドラマ・芸能マネージャー・CM・配信など、エンタメ特化の求人をお届けします。未経験から始められる仕事も多数。
                     </p>
                     <div class="mt-5 flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold bg-white/10 text-telecareer-text-on-dark border border-white/10">未経験OK</span>
+                        <?php if (!$logged_in) : ?>
+                            <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold bg-white/10 text-telecareer-text-on-dark border border-white/10">未経験OK</span>
+                        <?php endif; ?>
                         <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold bg-white/10 text-telecareer-text-on-dark border border-white/10">登録無料</span>
                         <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold bg-white/10 text-telecareer-text-on-dark border border-white/10">by テレキャリア</span>
                     </div>

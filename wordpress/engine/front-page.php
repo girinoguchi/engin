@@ -140,7 +140,9 @@ $row_durations = array('72s', '88s', '64s', '94s', '78s');
                 <a href="<?php echo esc_url(home_url('/signup')); ?>" class="btn-cta btn-flashy px-10 py-4 font-bold text-lg w-full sm:w-auto">無料で会員登録 →</a>
             </div>
             <div class="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-gray-700">
-                <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-telecareer-yellow"></span>未経験OK</span>
+                <?php if (!is_user_logged_in()) : ?>
+                    <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-telecareer-yellow"></span>未経験OK</span>
+                <?php endif; ?>
                 <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-telecareer-coral"></span>全部無料</span>
             </div>
             <p class="mt-8 text-sm md:text-base font-black text-telecareer-ink">
