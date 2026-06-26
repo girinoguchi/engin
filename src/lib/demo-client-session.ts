@@ -15,6 +15,7 @@ export type ClientSession = {
 };
 
 const KEY = "demo_session_v1";
+const LOGGED_OUT_KEY = "demo_logged_out";
 const EVENT = "demo-session-change";
 
 export function saveClientSession(session: ClientSession): void {
@@ -44,6 +45,31 @@ export function clearClientSession(): void {
     window.dispatchEvent(new Event(EVENT));
   } catch {
     // ignore
+  }
+}
+
+/** ログアウト直後は Cookie→localStorage 同期を止める（再自動ログイン防止） */
+export function markLoggedOut(): void {
+  try {
+    sessionStorage.setItem(LOGGED_OUT_KEY, "1");
+  } catch {
+    // ignore
+  }
+}
+
+export function clearLoggedOutFlag(): void {
+  try {
+    sessionStorage.removeItem(LOGGED_OUT_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+export function isLoggedOutFlagSet(): boolean {
+  try {
+    return sessionStorage.getItem(LOGGED_OUT_KEY) === "1";
+  } catch {
+    return false;
   }
 }
 

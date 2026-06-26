@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { loadClientSession, saveClientSession, demoAfterLoginPath } from "@/lib/demo-client-session";
+import { clearLoggedOutFlag, isLoggedOutFlagSet, loadClientSession, saveClientSession, demoAfterLoginPath } from "@/lib/demo-client-session";
 
 const AFTER_LOGIN_MEMBER = "/jobs";
 
@@ -19,6 +19,7 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
   );
 
   useEffect(() => {
+    if (isLoggedOutFlagSet()) return;
     const session = loadClientSession();
     if (session) {
       window.location.assign(demoAfterLoginPath(session.role));
@@ -55,6 +56,7 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
         return;
       }
       if (data.session) {
+        clearLoggedOutFlag();
         saveClientSession(data.session);
         window.location.assign(demoAfterLoginPath(data.session.role));
       } else {

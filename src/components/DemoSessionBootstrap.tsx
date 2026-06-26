@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { loadClientSession, saveClientSession, type ClientSession } from "@/lib/demo-client-session";
+import { isLoggedOutFlagSet, loadClientSession, saveClientSession, type ClientSession } from "@/lib/demo-client-session";
 
 /**
  * Cookie にセッションがあり localStorage にない場合に同期する。
@@ -9,6 +9,7 @@ import { loadClientSession, saveClientSession, type ClientSession } from "@/lib/
  */
 export function DemoSessionBootstrap() {
   useEffect(() => {
+    if (isLoggedOutFlagSet()) return;
     if (loadClientSession()) return;
 
     fetch("/api/demo/session", { credentials: "include" })
