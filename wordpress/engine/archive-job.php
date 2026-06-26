@@ -2,7 +2,7 @@
 /**
  * 求人一覧 /jobs（Next.js 版 src/app/jobs/page.tsx を移植）。
  * 雇用形態タブ＋詳細絞り込み、ログイン会員にはおすすめ求人を表示。
- * ※ 当ページはログイン必須（functions.php の engine_require_login_for_jobs で制御）。
+ * ※ 求人一覧は未ログインでも閲覧可能（Next.js 版に合わせる）。
  */
 if (!defined('ABSPATH')) {
     exit;

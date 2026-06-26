@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DemoBanner } from "@/components/DemoBanner";
+import { DemoSessionBootstrap } from "@/components/DemoSessionBootstrap";
 import { NavigationProgress } from "@/components/NavigationProgress";
+import { isDemoMode } from "@/lib/demo-auth";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,6 +21,7 @@ export default function RootLayout({
       <body className="antialiased min-h-screen bg-telecareer-offwhite text-gray-800">
         <NavigationProgress />
         <DemoBanner />
+        {isDemoMode() ? <DemoSessionBootstrap /> : null}
         {children}
       </body>
     </html>
