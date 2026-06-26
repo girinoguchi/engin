@@ -152,7 +152,7 @@ function engine_handle_login() {
     }
 
     wp_set_current_user($signed->ID);
-    wp_safe_redirect(home_url('/mypage'));
+    wp_safe_redirect(home_url('/jobs'));
     exit;
 }
 add_action('admin_post_nopriv_engine_login', 'engine_handle_login');
