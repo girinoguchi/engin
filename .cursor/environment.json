@@ -3,16 +3,8 @@
   "install": "npm install",
   "terminals": [
     {
-      "name": "dev-server",
-      "command": "npm run dev"
-    },
-    {
-      "name": "mobile-preview",
-      "command": "npm run mobile"
-    },
-    {
-      "name": "tunnel-watchdog",
-      "command": "bash scripts/run-tunnel-watchdog.sh"
+      "name": "demo-stack",
+      "command": "npm run demo:stack"
     }
   ]
 }

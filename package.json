@@ -17,6 +17,7 @@
     "start": "cd .next/standalone && TELECAREER_PROJECT_ROOT=\"$(cd ../.. && pwd)\" DEMO_PUBLIC_HTTPS=1 DEMO_DEBUG=1 HOSTNAME=0.0.0.0 PORT=3000 node server.js",
     "preview": "npm run build && npm run start",
     "mobile": "bash scripts/start-mobile-preview.sh",
+    "demo:stack": "bash scripts/run-demo-stack.sh",
     "setup:cursor": "bash scripts/ensure-cursor-all-repos.sh",
     "ensure:cursor:all": "bash scripts/ensure-cursor-all-repos.sh",
     "ensure:cursor:guide": "bash scripts/ensure-cursor-all-repos.sh --guide",
