@@ -27,8 +27,26 @@ restart_tunnel() {
   tmux $TMUX_CONF new-session -d -s preview-tunnel -c "$ROOT" -- bash -lc 'bash scripts/run-cloudflared.sh'
 }
 
-echo "[tunnel-watchdog] Monitoring $URL_FILE (every ${CHECK_INTERVAL}s) ..."
+restart_dev() {
+  echo "[tunnel-watchdog] Restarting dev server ..."
+  tmux $TMUX_CONF kill-session -t demo-dev 2>/dev/null || true
+  tmux $TMUX_CONF kill-session -t dev-server 2>/dev/null || true
+  tmux $TMUX_CONF new-session -d -s demo-dev -c "$ROOT" -- bash -lc 'bash scripts/run-dev-watchdog.sh'
+}
+
+check_dev() {
+  curl -sf --max-time 5 http://127.0.0.1:3000/ >/dev/null 2>&1
+}
+
+echo "[tunnel-watchdog] Monitoring dev server + $URL_FILE (every ${CHECK_INTERVAL}s) ..."
 while true; do
+  if ! check_dev; then
+    echo "[tunnel-watchdog] Dev server unhealthy"
+    restart_dev
+    sleep 20
+    continue
+  fi
+
   if [ ! -f "$URL_FILE" ]; then
     restart_tunnel
     sleep 15
@@ -36,9 +54,10 @@ while true; do
   fi
   URL=$(tr -d '[:space:]' < "$URL_FILE")
   if [ -z "$URL" ] || ! check_url "$URL"; then
-    echo "[tunnel-watchdog] Unhealthy: ${URL:-<empty>}"
+    echo "[tunnel-watchdog] Tunnel unhealthy: ${URL:-<empty>}"
     restart_tunnel
     sleep 20
+    continue
   fi
   sleep "$CHECK_INTERVAL"
 done
