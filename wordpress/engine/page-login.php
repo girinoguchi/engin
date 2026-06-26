@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
 }
 
 if (is_user_logged_in()) {
-    wp_safe_redirect(home_url('/mypage'));
+    wp_safe_redirect(home_url('/jobs'));
     exit;
 }
 
