@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 
 type AdminModalShellProps = {
   title: string;
@@ -9,46 +10,79 @@ type AdminModalShellProps = {
   footer?: ReactNode;
 };
 
+type VisualViewportState = {
+  top: number;
+  left: number;
+  height: number;
+  width: number;
+};
+
+function getVisualViewportState(): VisualViewportState {
+  const vv = window.visualViewport;
+  if (!vv) {
+    return {
+      top: 0,
+      left: 0,
+      height: window.innerHeight,
+      width: window.innerWidth,
+    };
+  }
+  return {
+    top: vv.offsetTop,
+    left: vv.offsetLeft,
+    height: vv.height,
+    width: vv.width,
+  };
+}
+
+function lockPageScroll(): () => void {
+  const scrollY = window.scrollY;
+  const { style: htmlStyle } = document.documentElement;
+  const { style: bodyStyle } = document.body;
+
+  htmlStyle.overflow = "hidden";
+  bodyStyle.overflow = "hidden";
+  bodyStyle.touchAction = "none";
+
+  return () => {
+    htmlStyle.overflow = "";
+    bodyStyle.overflow = "";
+    bodyStyle.touchAction = "";
+    window.scrollTo(0, scrollY);
+  };
+}
+
 /**
- * 管理画面用モーダル。スマホでもフォーム末尾までスクロールし、下部ボタンは常に表示。
- * iOS Safari の仮想キーボード表示時も visualViewport に合わせて高さを調整する。
+ * 管理画面用モーダル。スマホでは表示領域いっぱいに開き、フォームは本文のみスクロール。
+ * iOS Safari のアドレスバー・仮想キーボード表示時も visualViewport に合わせて配置する。
  */
 export function AdminModalShell({ title, onClose, children, footer }: AdminModalShellProps) {
   const bodyRef = useRef<HTMLDivElement>(null);
-  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const [viewport, setViewport] = useState<VisualViewportState | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
-
-    const scrollY = window.scrollY;
-    document.body.style.position = "fixed";
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.left = "0";
-    document.body.style.right = "0";
-    document.body.style.width = "100%";
-    document.body.style.overflow = "hidden";
+    const unlock = lockPageScroll();
 
     return () => {
       document.removeEventListener("keydown", onKey);
-      document.body.style.position = "";
-      document.body.style.top = "";
-      document.body.style.left = "";
-      document.body.style.right = "";
-      document.body.style.width = "";
-      document.body.style.overflow = "";
-      window.scrollTo(0, scrollY);
+      unlock();
     };
   }, [onClose]);
 
   useEffect(() => {
     const vv = window.visualViewport;
-    if (!vv) return;
-
-    const update = () => setViewportHeight(vv.height);
+    const update = () => setViewport(getVisualViewportState());
     update();
+    if (!vv) return;
     vv.addEventListener("resize", update);
     vv.addEventListener("scroll", update);
     return () => {
@@ -65,7 +99,7 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
       const target = e.target;
       if (!(target instanceof HTMLElement) || !body.contains(target)) return;
       requestAnimationFrame(() => {
-        target.scrollIntoView({ block: "center", behavior: "smooth" });
+        target.scrollIntoView({ block: "nearest", behavior: "smooth" });
       });
     };
 
@@ -73,9 +107,26 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
     return () => body.removeEventListener("focusin", onFocusIn);
   }, []);
 
-  return (
+  if (!mounted) return null;
+
+  const overlayStyle: CSSProperties = viewport
+    ? {
+        top: viewport.top,
+        left: viewport.left,
+        width: viewport.width,
+        height: viewport.height,
+      }
+    : {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      };
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4"
+      className="fixed z-[200] flex items-stretch sm:items-center justify-center sm:p-4"
+      style={overlayStyle}
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -88,11 +139,10 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
       />
 
       <div
-        className="relative z-10 tc-card w-full max-w-2xl max-h-[100dvh] sm:max-h-[min(90dvh,48rem)] flex flex-col overflow-hidden rounded-t-2xl sm:rounded-2xl p-0"
-        style={viewportHeight ? { maxHeight: `${viewportHeight}px` } : undefined}
+        className="relative z-10 tc-card w-full max-w-2xl h-full sm:h-auto sm:max-h-[min(90dvh,48rem)] flex flex-col overflow-hidden min-h-0 rounded-none sm:rounded-2xl p-0 shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between shrink-0 px-5 pt-5 pb-3 sm:px-8 sm:pt-6 border-b border-ink/10">
+        <div className="flex items-center justify-between shrink-0 px-5 pt-[max(1.25rem,env(safe-area-inset-top,0px))] pb-3 sm:px-8 sm:pt-6 border-b border-ink/10">
           <h2 className="text-lg sm:text-xl font-black text-telecareer-ink pr-2">{title}</h2>
           <button
             type="button"
@@ -106,7 +156,7 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
 
         <div
           ref={bodyRef}
-          className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y px-5 py-4 pb-28 sm:px-8 sm:pb-4 [-webkit-overflow-scrolling:touch]"
+          className="flex-1 min-h-0 overflow-y-auto overscroll-contain touch-pan-y px-5 py-4 sm:px-8 [-webkit-overflow-scrolling:touch]"
         >
           {children}
         </div>
@@ -117,6 +167,7 @@ export function AdminModalShell({ title, onClose, children, footer }: AdminModal
           </div>
         ) : null}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
