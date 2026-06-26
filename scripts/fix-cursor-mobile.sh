@@ -11,9 +11,9 @@
 set -euo pipefail
 
 OWNER="girinoguchi"
-REPO="telecareer-engine"
-FRESH_REPO="telecareer-engine-cloud"
-DESCRIPTION="テレキャリアエンジン telecareer-engine - エンタメ業界専門求人マッチング"
+REPO="syokugyo"
+FRESH_REPO="syokugyo-cloud"
+DESCRIPTION="テレキャリアエンジン syokugyo telecareer-engine - エンタメ業界専門求人マッチング"
 
 print_mobile_guide() {
   cat <<'GUIDE'
@@ -44,8 +44,8 @@ print_mobile_guide() {
      （ホーム画面に追加するとアプリのように使えます）
 
   5. 新規 Agent → リポジトリ検索欄に
-     telecareer
-     と入力（小文字・英語）
+     syokugyo
+     と入力（旧名 telecareer-engine では出ません）
 
 ■ 手順 B（手順 A でも出ない場合）— GitHub App を完全削除して再接続
 
@@ -58,7 +58,7 @@ print_mobile_guide() {
 
 ■ 手順 C（それでも出ない場合）— PR から Agent を起動（リポジトリ選択不要）
 
-  1. GitHub アプリで girinoguchi/telecareer-engine を開く
+  1. GitHub アプリで girinoguchi/syokugyo を開く
   2. 任意の Pull Request を開く（なければ main からブランチを作る）
   3. コメント欄に @cursor と書いて指示を送る
      例: @cursor READMEの誤字を直して
@@ -70,14 +70,14 @@ print_mobile_guide() {
   Mac/PC で:
     bash scripts/fix-cursor-mobile.sh --fresh-repo
 
-  作成されるリポジトリ: girinoguchi/telecareer-engine-cloud
-  Cursor では telecareer-cloud と検索
+  作成されるリポジトリ: girinoguchi/syokugyo-cloud
+  Cursor では syokugyo-cloud と検索
 
 ■ それでもダメな場合
 
   Cursor サポートに連絡（キャッシュクリア依頼）:
   hi@cursor.com
-  内容: 「girinoguchi/telecareer-engine が Cloud Agent の
+  内容: 「girinoguchi/syokugyo が Cloud Agent の
         リポジトリ一覧に表示されない。GitHub App は許可済み。」
 
 ============================================================
@@ -131,7 +131,7 @@ create_fresh_repo() {
   echo "  1. https://cursor.com/dashboard?tab=integrations"
   echo "     → GitHub Disconnect → Connect → All repositories"
   echo "  2. https://cursor.com/agents → 新規 Agent"
-  echo "  3. 検索: telecareer-cloud"
+  echo "  3. 検索: syokugyo-cloud"
   echo ""
   echo "※ この新規リポジトリには GitHub から直接 Cursor App を入れないでください"
   echo "  必ず Cursor ダッシュボードの Connect から許可してください"
@@ -192,7 +192,7 @@ for i in json.load(sys.stdin).get('installations', []):
         break
 ")
 
-echo "==> telecareer-engine を Cursor App に追加"
+echo "==> syokugyo を Cursor App に追加"
 CODE=$(ghapi_put "user/installations/${INSTALL_ID}/repositories/${REPO_ID}" || echo "000")
 if [ "$CODE" = "204" ] || [ "$CODE" = "200" ]; then
   echo "    ✅ 追加成功"

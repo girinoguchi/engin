@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# telecareer-engine を Cursor の「All repositories」に常時表示させる
+# syokugyo（テレキャリアエンジン）を Cursor の「All repositories」に常時表示させる
 #
 # Mac/PC:
 #   bash scripts/ensure-cursor-all-repos.sh
@@ -11,9 +11,9 @@
 set -euo pipefail
 
 OWNER="girinoguchi"
-REPO="telecareer-engine"
-DESCRIPTION="テレキャリアエンジン telecareer-engine - エンタメ業界専門求人マッチング"
-TOPICS='["telecareer","telecareer-engine","cursor","engine"]'
+REPO="syokugyo"
+DESCRIPTION="テレキャリアエンジン syokugyo telecareer-engine - エンタメ業界専門求人マッチング"
+TOPICS='["syokugyo","telecareer","telecareer-engine","cursor","engine"]'
 
 print_all_repos_guide() {
   cat <<'GUIDE'
@@ -44,9 +44,8 @@ print_all_repos_guide() {
 
   https://cursor.com/agents
   → 新規 Agent
-  → 検索欄: telecareer
-
-  ※「テレキャリア」「エンジン」では出ません
+  → 検索欄: syokugyo
+     （旧名 telecareer でも説明文に含まれます）
 
 ■ 4. スマホアプリ化（任意）
 
@@ -159,7 +158,7 @@ else
   echo "==> 5. すでに All repositories です"
 fi
 
-echo "==> 6. telecareer-engine を明示的に許可リストへ追加"
+echo "==> 6. syokugyo を明示的に許可リストへ追加"
 CODE=$(ghapi_put "user/installations/${INSTALL_ID}/repositories/${REPO_ID}" || echo "000")
 if [ "$CODE" = "204" ] || [ "$CODE" = "200" ]; then
   echo "    ✅ 追加成功"
@@ -185,7 +184,7 @@ else:
         print('no')
 ")
 case "$ACCESSIBLE" in
-  yes) echo "    ✅ telecareer-engine は許可済み" ;;
+  yes) echo "    ✅ syokugyo は許可済み" ;;
   all-mode) echo "    ✅ All repositories モード（全リポジトリ許可）" ;;
   *) echo "    ⚠️  まだ許可されていない可能性あり" ;;
 esac
@@ -198,6 +197,6 @@ echo "  GitHub → Disconnect → Connect"
 echo "  → All repositories を選択"
 echo ""
 echo "  開く: https://cursor.com/agents"
-echo "  検索: telecareer"
+echo "  検索: syokugyo"
 echo "============================================"
 print_all_repos_guide
