@@ -1,13 +1,10 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
 import { MypageContactForm } from "@/components/MypageContactForm";
-import { JobCard } from "@/app/jobs/JobCard";
 import { MypageDemoClient } from "./MypageDemoClient";
 import { getCurrentProfile, getCurrentUser } from "@/lib/auth";
 import { isDemoMode } from "@/lib/demo-auth";
-import { getRecommendedJobs } from "@/lib/wordpress/jobs";
 
 export default async function Mypage() {
   // デモモードは Cookie をブロックするブラウザ(iOS Brave等)に対応するため
@@ -34,7 +31,6 @@ export default async function Mypage() {
   const name = profile?.contact_name?.trim() || "会員";
   const categories = profile?.interested_categories ?? [];
   const hasCategories = categories.length > 0;
-  const recommended = await getRecommendedJobs(categories, 6);
 
   return (
     <div className="min-h-screen flex flex-col bg-telecareer-surface overflow-x-hidden">
@@ -81,31 +77,7 @@ export default async function Mypage() {
           </dl>
         </section>
 
-        <section>
-          <h2 className="font-black text-xl text-telecareer-ink mb-4">
-            {hasCategories ? "あなたへのおすすめ求人" : "新着の求人"}
-          </h2>
-          {recommended.length === 0 ? (
-            <div className="tc-card p-8 text-center">
-              <p className="text-gray-600 text-sm">
-                現在ご紹介できる求人がありません。新しい求人が入り次第ご案内します。
-              </p>
-            </div>
-          ) : (
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {recommended.map((job) => (
-                <JobCard key={job.id} job={job} />
-              ))}
-            </div>
-          )}
-          <div className="mt-8 text-center">
-            <Link href="/jobs" className="btn-cta btn-flashy px-8 py-3.5 font-bold">
-              すべての求人を見る →
-            </Link>
-          </div>
-        </section>
-
-        <section className="mt-12" id="contact">
+        <section id="contact">
           <h2 className="font-black text-xl text-telecareer-ink mb-2">お問い合わせ</h2>
           <p className="text-sm text-gray-600 mb-4">
             サービスやお仕事に関するご質問・ご相談はこちらから。担当よりご連絡いたします。

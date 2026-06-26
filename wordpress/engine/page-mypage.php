@@ -1,7 +1,7 @@
 <?php
 /**
  * Template Name: マイページ（エンジン）
- * 会員の専用ダッシュボード。プロフィールとおすすめ求人を表示。
+ * 会員の専用ダッシュボード。プロフィールとお問い合わせを表示。
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -23,13 +23,6 @@ if ($name === '') {
 $user_type = get_user_meta($uid, 'user_type', true);
 $cats = get_user_meta($uid, 'interested_categories', true);
 $cats = is_array($cats) ? array_values(array_filter($cats)) : array();
-
-$recommended = engine_get_recommended_jobs($uid, 6);
-$is_recommended = !empty($recommended);
-if (!$is_recommended) {
-    // 希望カテゴリ未登録時は新着求人を案内
-    $recommended = array_slice(engine_all_jobs(), 0, 6);
-}
 ?>
 <main class="mx-auto max-w-6xl px-4 py-10 flex-1 w-full">
     <span class="tc-eyebrow bg-white">MY PAGE</span>
@@ -58,26 +51,6 @@ if (!$is_recommended) {
                 </dd>
             </div>
         </dl>
-    </section>
-
-    <section>
-        <h2 class="font-black text-xl text-telecareer-ink mb-4">
-            <?php echo $is_recommended ? 'あなたへのおすすめ求人' : '新着の求人'; ?>
-        </h2>
-        <?php if (empty($recommended)) : ?>
-            <div class="tc-card p-8 text-center">
-                <p class="text-gray-600 text-sm">現在ご紹介できる求人がありません。新しい求人が入り次第ご案内します。</p>
-            </div>
-        <?php else : ?>
-            <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                <?php foreach ($recommended as $job) : ?>
-                    <?php get_template_part('template-parts/job-card', null, array('job' => $job)); ?>
-                <?php endforeach; ?>
-            </div>
-        <?php endif; ?>
-        <div class="mt-8 text-center">
-            <a href="<?php echo esc_url(home_url('/jobs')); ?>" class="btn-cta btn-flashy px-8 py-3.5 font-bold">すべての求人を見る →</a>
-        </div>
     </section>
 
     <section class="mt-12" id="contact">
