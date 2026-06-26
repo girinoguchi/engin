@@ -11,7 +11,7 @@
 set -euo pipefail
 
 OWNER="girinoguchi"
-REPO="syokugyo"
+REPO="engin"
 DESCRIPTION="テレキャリアエンジン syokugyo telecareer-engine - エンタメ業界専門求人マッチング"
 TOPICS='["syokugyo","telecareer","telecareer-engine","cursor","engine"]'
 

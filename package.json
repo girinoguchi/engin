@@ -1,10 +1,10 @@
 {
-  "name": "telecareer-engine",
+  "name": "telecareer-engin",
   "version": "0.1.0",
-  "description": "テレキャリアエンジン - エンタメ業界専門求人マッチング",
+  "description": "テレキャリアエンジン - エンタメ業界専門求人マッチング（Next.js）",
   "repository": {
     "type": "git",
-    "url": "https://github.com/girinoguchi/syokugyo.git"
+    "url": "https://github.com/girinoguchi/engin.git"
   },
   "private": true,
   "scripts": {

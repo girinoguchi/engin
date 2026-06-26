@@ -1,272 +1,41 @@
-# テレキャリアエンジン（syokugyo）
+# テレキャリアエンジン（engin）— エンタメ求人マッチング
 
-エンタメ業界専門求人サービス **「エンジン」**（運営: テレキャリア / 株式会社フォーミュレーションI.T.S.）のリポジトリです。
+エンタメ業界専門の求人マッチングサービス **「エンジン」** の Next.js アプリです。
 
-GitHub名: `girinoguchi/syokugyo`（表示名: テレキャリアエンジン / 旧名 `telecareer-engine`）  
-Cursorで選ぶときは検索欄に **`syokugyo`** と入力してください。
+GitHub: `girinoguchi/engin`  
+職業タイプ診断（MBTI）は別リポジトリ `girinoguchi/syokugyo` です。
 
-> **スクショで Recent に `girinoguchi/syokugyo` ✓ が付いていれば、それがこのプロジェクトです。**  
-> `telecareer-engine` という名前のリポジトリは GitHub 上では `syokugyo` に統合されています。  
-> 「All Repositories」に3件しか出ない場合は、下記の GitHub 設定がまだ「選択したリポジトリのみ」です。
-
-### Cursor で常に開けるようにする（All repositories）
-
-`syokugyo` を Cursor の **All Repositories 一覧** に常時表示するには、GitHub と Cursor の **両方** で All repositories を選ぶ必要があります。
-
-#### スマホで GitHub を All repositories にする（最重要）
-
-1. ブラウザで開く: **https://github.com/settings/installations**
-2. 一覧から **Cursor** をタップ
-3. 右上または下部の **Configure** をタップ
-4. **Repository access** で **All repositories** を選ぶ（「Only select repositories」ではない）
-5. **Save** / **Update** をタップ
-
-#### スマホで Cursor を再接続
-
-1. **https://cursor.com/dashboard?tab=integrations**
-2. GitHub → **Disconnect** → 数秒待つ → **Connect**
-3. GitHub 画面でも **All repositories** を選択
-
-#### 開く
-
-1. **https://cursor.com/agents**
-2. リポジトリ選択 → 検索: **`syokugyo`**
-3. または **Recent** の `girinoguch/syokugyo` ✓ をそのまま選択して開始
-
-All repositories 設定後は、一覧にあなたの全リポジトリが表示されます。
-
-#### 手順 1（最重要）— Cursor ダッシュボードから接続
-
-1. https://cursor.com/dashboard?tab=integrations を開く
-2. GitHub → **Disconnect** → 数秒待つ → **Connect**
-3. GitHub ログインで **`girinoguchi`** を選ぶ
-4. **Repository access** で **All repositories**
-5. https://cursor.com/agents → 新規 Agent → 検索欄に **`syokugyo`**
-
-「テレキャリア」「エンジン」では出ません。
-
-#### 手順 2 — それでも出ない場合
-
-1. https://github.com/settings/installations → **Cursor** → **Uninstall**
-2. 2〜3 分待つ
-3. 手順 1 をやり直す（**必ず Cursor ダッシュボードの Connect から**）
-
-#### 手順 3 — リポジトリ選択なしで Agent を動かす
-
-GitHub アプリで `girinoguchi/syokugyo` の Pull Request を開き、コメントで **`@cursor`** と指示を書く。一覧に出なくても動くことがあります。
-
-#### 手順 4 — 最終手段（既知不具合の回避）
-
-一度 Cursor App を入れ直したリポジトリは一覧に出ない不具合があります。Mac/PC で:
-
-```bash
-npm run fix:cursor:fresh
-```
-
-新規リポジトリ `telecareer-engine-cloud` が作られます。Cursor では **`telecareer-cloud`** と検索してください。
-
-#### 手順の全文（スマホ向け）
-
-```bash
-npm run fix:cursor:guide
-```
-
-**Mac/PC がある場合（自動診断・修復）**
-
-```bash
-gh auth login
-npm run fix:cursor
-```
-
-エンタメ業界で働きたい人（求職者）と、エンタメ求人をつなぐマッチングサービスです。求職者はエキストラ・音響・照明・制作などのエンタメ特化求人を検索・応募でき、管理者は求人の登録・管理と応募の確認ができます。
-
-## 技術スタック
-
-- **Next.js 14**（App Router）
-- **TypeScript**
-- **Tailwind CSS**
-- **Supabase**（Auth / Database）
-
-## 初回セットアップ手順
-
-### 1. リポジトリのクローンと依存関係
-
-```bash
-cd syokugyo
-npm install
-```
-
-### 2. Supabase プロジェクト作成
-
-1. [Supabase](https://supabase.com) にログインし、新規プロジェクトを作成
-2. プロジェクトの **Settings → API** から以下を控える:
-   - **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
-   - **anon public** key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-### 3. 環境変数
-
-プロジェクトルートに `.env.local` を作成:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=あなたのProject URL
-NEXT_PUBLIC_SUPABASE_ANON_KEY=あなたのanon key
-```
-
-（`.env.example` をコピーしてリネームし、値を埋めても可）
-
-### 4. データベースのセットアップ
-
-1. Supabase ダッシュボードで **SQL Editor** を開く
-2. `supabase/schema.sql` の内容をそのまま実行（テーブル・RLS・ポリシー作成）
-3. 続けて `supabase/seed.sql` を実行（サンプル人材2件を投入）
-
-### 5. 管理者アカウントの作り方
-
-1. **会員登録**で通常どおりアカウントを作成（/signup）
-2. Supabase ダッシュボードの **Table Editor** で **profiles** を開く
-3. 作成したユーザーの行の **role** を `member` から **`admin`** に変更して保存
-
-これでそのアカウントでログインすると「管理」リンクが表示され、管理者ダッシュボード・人材の追加・編集・削除・依頼一覧が利用できます。
-
-### 6. 開発サーバー起動
-
-```bash
-npm run dev
-```
-
-ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
-
-## デモプレビュー（Supabase なし）
-
-Supabase の設定なしで UI をブラウザ確認したい場合は、**`.env.local` を作らない**（または Supabase の値を空にする）だけでデモモードが有効になります。
-
-### ローカルで起動
+## デモ起動
 
 ```bash
 npm install
 npm run demo
 ```
 
-### Docker で起動（推奨・常時プレビュー向け）
+http://localhost:3000
 
-サーバーに Docker があれば、依存関係のインストールから本番ビルド・起動まで一発で行えます。
+## デモアカウント
 
-```bash
-npm run docker:demo
-```
-
-バックグラウンドで起動する場合:
-
-```bash
-npm run docker:demo:detach
-```
-
-起動後は **http://サーバーのIP:3000** でアクセスできます。VPS や社内サーバーに置いておけば、毎回スクリーンショットを撮らなくてもブラウザで確認できます。
-
-### デモ用テストアカウント
-
-| 種別 | メール | パスワード |
-|------|--------|------------|
+| 種別 | ID | PASS |
+|------|-----|------|
 | 会員 | `member@demo.local` | `demo123` |
-| 管理者 | `admin@demo.local` | `demo123` |
+| 管理者 | `admin` | `admin` |
 
-※ 管理画面（`/admin`）はデモでは未対応です。人材名簿・ログイン・会員登録の動作確認用です。
+## 主な機能
 
-### Vercel などへのデプロイ
+- 求人検索・応募（`/jobs`）
+- 管理者ダッシュボード（`/admin`）— 案件・アカウント CRUD
+- スマホプレビュー（`npm run mobile`）
+- デモ認証（Supabase 不要）
 
-ホスティング先で **Supabase の環境変数を設定しなければ** 自動的にデモモードで動作します。本番運用時のみ `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` を設定してください。
+## Cursor で開く
 
-### 求人データの自動更新（WordPress 連携）
+1. https://cursor.com/agents
+2. リポジトリ: `girinoguchi/engin`
+3. ブランチ: `main`
 
-Next.js の求人ページ（`/jobs`）は WordPress の REST API からデータを取得します。
+## 技術スタック
 
-```env
-WORDPRESS_API_URL=http://localhost:8888/wp-json
-REVALIDATE_SECRET=ランダムな秘密文字列
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
-```
-
-WordPress 側（wp-env 利用時）:
-
-```env
-NEXT_REVALIDATE_URL=http://localhost:3000/api/revalidate
-REVALIDATE_SECRET=上と同じ秘密文字列
-```
-
-- WordPress で案件を保存・削除すると、Next.js のキャッシュが**即時再検証**されます
-- ブラウザを開いたままでも **30秒ごと** に最新データへ自動更新されます
-- タブを戻したときも自動で再取得します
-
-WordPress が起動していない場合は `wordpress/seed/jobs.json`（`local-data.sql` と同内容）を表示します。`main` を pull したあとはサーバーを再起動すると反映されます。
-
-## ルーティング
-
-| パス | 説明 |
-|------|------|
-| `/` | トップページ |
-| `/signup` | 会員登録 |
-| `/login` | ログイン |
-| `/jobs` | 案件一覧（単発・中長期・社員募集でフィルタ／キーワード検索） |
-| `/jobs/[id]` | 案件詳細・応募フォーム（年齢・住所・電話番号・性別を入力して応募） |
-| `/talents` | 名簿一覧（検索・フィルタ・おすすめ順） |
-| `/talents/[id]` | 人材詳細・依頼ボタン |
-| `/admin` | 管理者ダッシュボード（管理者のみ） |
-| `/admin/jobs` | 案件管理（管理者のみ） |
-| `/admin/jobs/new` | 案件を新規投稿（管理者のみ） |
-| `/admin/jobs/[id]/edit` | 案件編集（管理者のみ） |
-| `/admin/applications` | 応募一覧・対応状況の更新（管理者のみ） |
-| `/admin/talents/new` | 人材追加（管理者のみ） |
-| `/admin/talents/[id]/edit` | 人材編集（管理者のみ） |
-| `/admin/requests` | 依頼一覧（管理者のみ） |
-
-## ビルド・デプロイ
-
-```bash
-npm run build
-npm start
-```
-
-Vercel などにデプロイする場合は、環境変数に `NEXT_PUBLIC_SUPABASE_URL` と `NEXT_PUBLIC_SUPABASE_ANON_KEY` を設定してください。
-
-## 今後追加すべき機能（TODO）
-
-- [ ] 通知メールの本実装（依頼時に管理者へメール送信）
-- [ ] チャット・評価・レビュー・お気に入り
-- [ ] 高度なレコメンド（AI など）
-- [ ] 複雑な権限管理（複数管理者ロールなど）
-- [ ] プロフィール画像アップロード（Supabase Storage）
-- [ ] 会員向け「自分の依頼一覧」ページ
-- [ ] 管理者用ログ（admin_logs テーブル）
-
----
-
-## この MVP で不足している点
-
-- 依頼時のメール通知は未実装（画面内の「送信しました」のみ）
-- 会員が「自分が送った依頼一覧」を見る画面がない
-- プロフィール画像のアップロードは未対応
-- パスワードリセット・メール確認の導線は Supabase 標準のまま
-- エラーハンドリング・バリデーションは最小限
-
-## 2日目以降に追加すべき機能
-
-1. **依頼メール通知**（Supabase Edge Functions または外部サービスで依頼作成時にメール送信）
-2. **会員マイページ**（自分の依頼一覧・プロフィール編集）
-3. **プロフィール画像**（Supabase Storage + 画像URL保存）
-4. **管理ログ**（誰がいつ人材を追加・編集・削除したか）
-5. **検索の UX 改善**（タグのサジェスト、保存検索など）
-
-## 本番運用前に必要な対応
-
-- 本番用 Supabase プロジェクトの作成と環境変数の切り替え
-- メール送信設定（Supabase Auth のメールテンプレート・送信元ドメイン）
-- ドメイン・HTTPS の設定
-- 定期的なバックアップ（Supabase のバックアップ設定確認）
-- 利用規約・プライバシーポリシー・特定商取引法に基づく表記（必要に応じて）
-
-## セキュリティ上の注意点
-
-- **anon key** はクライアントに露出するため、RLS（Row Level Security）で必ずアクセスを制限している。本番では RLS を無効にしないこと。
-- 管理者判定は `profiles.role = 'admin'` に依存。管理者の付与は Supabase ダッシュボードまたは信頼できる運用のみで行うこと。
-- 本番では Supabase の「Email confirmations」を有効にし、メール確認済みユーザーのみ利用可能にすることを推奨。
-- パスワードポリシー（最低文字数・複雑さ）は Supabase Auth の設定で強化可能。
+- Next.js 14（App Router）
+- TypeScript / Tailwind CSS
+- Supabase（本番用、未設定時はデモモード）
