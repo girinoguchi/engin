@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
 import { getCurrentProfile, getCurrentUser } from "@/lib/auth";
+import { isDemoMode } from "@/lib/demo-auth";
 import { getFilteredJobs, getRecommendedJobs } from "@/lib/wordpress/jobs";
 import type { JobFilters } from "@/lib/types";
 import { JobCard } from "./JobCard";
@@ -26,7 +27,7 @@ export default async function JobsPage({
 
   const user = await getCurrentUser();
   const profile = user ? await getCurrentProfile() : null;
-  if (profile?.role === "admin") {
+  if (!isDemoMode() && profile?.role === "admin") {
     redirect("/admin");
   }
   const jobs = await getFilteredJobs(filters);
