@@ -423,18 +423,10 @@ function engine_flash_from_query() {
 }
 
 /* ============================================================
-   求人ページ（一覧・詳細）はログイン必須
+   求人ページ（一覧・詳細）はログイン不要（Next.js 版に合わせる）
    ============================================================ */
 function engine_require_login_for_jobs() {
-    if (is_admin() || !is_main_query()) {
-        return;
-    }
-    if (is_post_type_archive('job') || is_singular('job')) {
-        if (!is_user_logged_in()) {
-            wp_safe_redirect(add_query_arg('notice', 'login_required', home_url('/login')));
-            exit;
-        }
-    }
+    // 応募・マイページ機能はログイン必須。求人一覧の閲覧は未ログインでも可能。
 }
 add_action('template_redirect', 'engine_require_login_for_jobs');
 

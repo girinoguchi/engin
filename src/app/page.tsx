@@ -3,6 +3,7 @@ import { AppHeader } from "@/components/AppHeader";
 import { Footer } from "@/components/Footer";
 import { MediaLogoMarquee } from "@/components/MediaLogoMarquee";
 import { CategoryCard } from "@/components/CategoryCard";
+import { getCurrentUser } from "@/lib/auth";
 import {
   CATEGORIES,
   COMPANY_INFO,
@@ -10,7 +11,8 @@ import {
   WORKS,
 } from "@/lib/home-content";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const user = await getCurrentUser();
   return (
     <div className="min-h-screen flex flex-col bg-telecareer-surface">
       <AppHeader />
@@ -39,10 +41,12 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="mt-7 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm font-bold text-gray-700">
-              <span className="inline-flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-telecareer-yellow" />
-                未経験OK
-              </span>
+              {!user ? (
+                <span className="inline-flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-telecareer-yellow" />
+                  未経験OK
+                </span>
+              ) : null}
               <span className="inline-flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-telecareer-coral" />
                 全部無料

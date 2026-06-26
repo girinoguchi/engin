@@ -16,11 +16,5 @@ export function JobsMemberOnly({ children }: { children: React.ReactNode }) {
     }
   }, [loading, session]);
 
-  if (loading || session?.role === "admin") {
-    return (
-      <div className="tc-card p-8 text-center text-sm text-gray-500">読み込み中...</div>
-    );
-  }
-
   return <>{children}</>;
 }

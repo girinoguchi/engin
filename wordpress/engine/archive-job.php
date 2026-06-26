@@ -2,7 +2,7 @@
 /**
  * 求人一覧 /jobs（Next.js 版 src/app/jobs/page.tsx を移植）。
  * 雇用形態タブ＋詳細絞り込み、ログイン会員にはおすすめ求人を表示。
- * ※ 当ページはログイン必須（functions.php の engine_require_login_for_jobs で制御）。
+ * ※ 求人一覧は未ログインでも閲覧可能（Next.js 版に合わせる）。
  */
 if (!defined('ABSPATH')) {
     exit;
@@ -93,13 +93,7 @@ $recommended = is_user_logged_in() ? engine_get_recommended_jobs(get_current_use
                 <?php endforeach; ?>
             </select>
         </div>
-        <div class="flex items-end">
-            <label class="flex items-center gap-2 cursor-pointer text-sm font-bold text-telecareer-ink">
-                <input type="checkbox" name="inexperienced" value="1"<?php checked($filters['inexperienced'], '1'); ?> class="w-4 h-4 accent-telecareer-orange" />
-                未経験OKのみ
-            </label>
-        </div>
-        <div class="flex items-end gap-2">
+        <div class="flex items-end gap-2 sm:col-span-2">
             <button type="submit" class="btn-cta px-6 py-2.5 font-bold">絞り込む</button>
             <a href="<?php echo esc_url(home_url('/jobs')); ?>" class="btn-outline-coral px-4 py-2.5 font-bold">リセット</a>
         </div>
