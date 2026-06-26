@@ -13,6 +13,8 @@ if [ ! -x "$CF_BIN" ]; then
 fi
 
 start_tunnel() {
+  pkill -f "/tmp/cloudflared tunnel" 2>/dev/null || true
+  sleep 1
   : >"$LOG"
   echo "[cloudflared] Starting tunnel (logs: $LOG) ..."
   "$CF_BIN" tunnel --url http://127.0.0.1:3000 2>&1 | tee -a "$LOG" &
