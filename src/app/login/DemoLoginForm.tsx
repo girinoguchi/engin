@@ -91,7 +91,6 @@ export function DemoLoginForm({ errorCode }: { errorCode?: string }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="tc-input"
-            placeholder="member@demo.local または admin"
           />
         </div>
         <div>
