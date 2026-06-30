@@ -3,10 +3,11 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { adminFetchJson } from "@/lib/demo-admin-client";
+import { adminUsersApiBase, isClientDemoMode } from "@/lib/admin-api-paths";
 import { useDemoClientSession } from "@/lib/demo-client-session";
 import { AccountFormModal, type AdminUser } from "./AccountFormModal";
 
-export function AdminAccountsManager() {
+export function AdminAccountsManager({ currentEmail }: { currentEmail?: string }) {
   const { session } = useDemoClientSession();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ export function AdminAccountsManager() {
   const load = useCallback(async () => {
     setLoading(true);
     const { ok, data } = await adminFetchJson<{ users?: AdminUser[]; error?: string }>(
-      "/api/demo/admin/users"
+      adminUsersApiBase()
     );
     if (!ok) {
       setError(data.error ?? "アカウントの取得に失敗しました");
@@ -37,7 +38,7 @@ export function AdminAccountsManager() {
   const handleDelete = async (user: AdminUser) => {
     if (!window.confirm(`「${user.email}」のアカウントを削除します。よろしいですか？`)) return;
     setDeletingEmail(user.email);
-    const { ok, data } = await adminFetchJson<{ error?: string }>("/api/demo/admin/users", {
+    const { ok, data } = await adminFetchJson<{ error?: string }>(adminUsersApiBase(), {
       method: "DELETE",
       body: JSON.stringify({ email: user.email }),
     });
@@ -55,7 +56,9 @@ export function AdminAccountsManager() {
     await load();
   };
 
-  const currentEmail = session?.email?.toLowerCase();
+  const currentEmailResolved =
+    currentEmail?.toLowerCase() ??
+    (isClientDemoMode() ? session?.email?.toLowerCase() : undefined);
 
   return (
     <div>
@@ -113,7 +116,7 @@ export function AdminAccountsManager() {
                 </tr>
               ) : (
                 users.map((user) => {
-                  const isSelf = currentEmail === user.email.toLowerCase();
+                  const isSelf = currentEmailResolved === user.email.toLowerCase();
                   return (
                     <tr key={user.email} className="border-b border-ink/5 align-middle">
                       <td className="px-4 py-3 font-bold text-ink max-w-[240px]">

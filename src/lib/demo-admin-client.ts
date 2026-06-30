@@ -1,8 +1,10 @@
 "use client";
 
 import { loadClientSession } from "./demo-client-session";
+import { isClientDemoMode } from "./admin-api-paths";
 
 function authHeaders(): Record<string, string> {
+  if (!isClientDemoMode()) return {};
   const session = loadClientSession();
   return session ? { "x-demo-email": session.email } : {};
 }
