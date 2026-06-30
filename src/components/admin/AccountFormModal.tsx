@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { adminFetchJson } from "@/lib/demo-admin-client";
+import { adminUsersApiBase } from "@/lib/admin-api-paths";
 import { AdminModalShell } from "./AdminModalShell";
 
 export type AdminUser = {
@@ -55,7 +56,7 @@ export function AccountFormModal({
     };
     if (password.trim()) payload.password = password.trim();
 
-    const { ok, data } = await adminFetchJson<{ error?: string }>("/api/demo/admin/users", {
+    const { ok, data } = await adminFetchJson<{ error?: string }>(adminUsersApiBase(), {
       method: isEdit ? "PATCH" : "POST",
       body: JSON.stringify(payload),
     });

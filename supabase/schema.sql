@@ -10,7 +10,12 @@ create table if not exists public.profiles (
   email text,
   role text default 'member' check (role in ('member', 'admin')),
   program_genres text[] default '{}',
-  needed_roles text[] default '{}'
+  needed_roles text[] default '{}',
+  user_type text,
+  interested_categories text[] default '{}',
+  birthdate date,
+  phone text,
+  newsletter_opt_in boolean default false
 );
 
 -- 2. talents（人材名簿）
@@ -33,7 +38,27 @@ create table if not exists public.talents (
   is_active boolean default true
 );
 
--- 3. requests（依頼）
+-- 3. jobs（求人）
+create table if not exists public.jobs (
+  id uuid primary key default gen_random_uuid(),
+  slug text not null unique,
+  created_at timestamptz default now(),
+  title text not null,
+  category text not null default 'その他',
+  job_type text not null default '単発',
+  body text default '',
+  location text,
+  pay text,
+  pay_type text,
+  wage_min numeric,
+  work_period text,
+  headcount int,
+  deadline text,
+  tags text[] default '{}',
+  is_active boolean default true
+);
+
+-- 4. requests（依頼）
 create table if not exists public.requests (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz default now(),
@@ -49,6 +74,7 @@ create table if not exists public.requests (
 -- RLS 有効化
 alter table public.profiles enable row level security;
 alter table public.talents enable row level security;
+alter table public.jobs enable row level security;
 alter table public.requests enable row level security;
 
 -- profiles: 本人は自分の情報を読める/更新できる、管理者は全件読める
@@ -63,6 +89,20 @@ create policy "profiles_insert_own" on public.profiles
 
 create policy "profiles_admin_select_all" on public.profiles
   for select using (
+    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+  );
+
+create policy "profiles_admin_update_all" on public.profiles
+  for update using (
+    exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
+  );
+
+-- jobs: 公開求人は誰でも閲覧、管理は管理者のみ
+create policy "jobs_select_active" on public.jobs
+  for select using (is_active = true);
+
+create policy "jobs_admin_all" on public.jobs
+  for all using (
     exists (select 1 from public.profiles p where p.id = auth.uid() and p.role = 'admin')
   );
 
@@ -100,6 +140,9 @@ create policy "talents_admin_select_all" on public.talents
   );
 
 -- インデックス
+create index if not exists idx_jobs_slug on public.jobs(slug);
+create index if not exists idx_jobs_is_active on public.jobs(is_active);
+create index if not exists idx_jobs_created_at on public.jobs(created_at desc);
 create index if not exists idx_talents_role on public.talents(role);
 create index if not exists idx_talents_genres on public.talents using gin(genres);
 create index if not exists idx_talents_hashtags on public.talents using gin(hashtags);

@@ -1,4 +1,5 @@
 import { loadDemoJobs } from "@/lib/demo-jobs-persist";
+import { fetchSupabaseJobs } from "@/lib/supabase/jobs";
 import type { Job, JobFilters } from "@/lib/types";
 import { getWordPressApiUrl, JOBS_CACHE_TAG, JOBS_REVALIDATE_SECONDS } from "./config";
 
@@ -147,6 +148,10 @@ export async function getJobs(): Promise<Job[]> {
   const wpJobs = await fetchWordPressJobs();
   if (wpJobs && wpJobs.length > 0) {
     return wpJobs;
+  }
+  const supabaseJobs = await fetchSupabaseJobs();
+  if (supabaseJobs && supabaseJobs.length > 0) {
+    return supabaseJobs;
   }
   return loadDemoJobs();
 }

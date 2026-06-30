@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { adminFetchJson } from "@/lib/demo-admin-client";
+import { adminJobsApiBase, adminUsersApiBase } from "@/lib/admin-api-paths";
 
 type Counts = { jobs: number; activeJobs: number; users: number; admins: number };
 
@@ -13,8 +14,8 @@ export function AdminDemoDashboard() {
     let active = true;
     (async () => {
       const [jobsRes, usersRes] = await Promise.all([
-        adminFetchJson<{ jobs?: { is_active: boolean }[] }>("/api/demo/admin/jobs"),
-        adminFetchJson<{ users?: { role: string }[] }>("/api/demo/admin/users"),
+        adminFetchJson<{ jobs?: { is_active: boolean }[] }>(adminJobsApiBase()),
+        adminFetchJson<{ users?: { role: string }[] }>(adminUsersApiBase()),
       ]);
       if (!active) return;
       const jobs = jobsRes.data.jobs ?? [];

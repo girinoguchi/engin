@@ -8,6 +8,7 @@ import {
   type Job,
 } from "@/lib/types";
 import { adminFetchJson } from "@/lib/demo-admin-client";
+import { adminJobsApiBase } from "@/lib/admin-api-paths";
 import { AdminModalShell } from "./AdminModalShell";
 
 type FormState = {
@@ -74,7 +75,8 @@ export function JobFormModal({
       wage_min: form.wage_min.trim() === "" ? null : form.wage_min,
       headcount: form.headcount.trim() === "" ? null : form.headcount,
     };
-    const url = isEdit ? `/api/demo/admin/jobs/${job!.id}` : "/api/demo/admin/jobs";
+    const base = adminJobsApiBase();
+    const url = isEdit ? `${base}/${job!.id}` : base;
     const method = isEdit ? "PUT" : "POST";
     const { ok, data } = await adminFetchJson<{ error?: string }>(url, {
       method,

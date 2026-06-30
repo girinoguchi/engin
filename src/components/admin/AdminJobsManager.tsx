@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import type { Job } from "@/lib/types";
 import { categoryClass } from "@/lib/wordpress/job-format";
 import { adminFetchJson } from "@/lib/demo-admin-client";
+import { adminJobsApiBase } from "@/lib/admin-api-paths";
 import { JobFormModal } from "./JobFormModal";
 
 export function AdminJobsManager() {
@@ -20,7 +21,7 @@ export function AdminJobsManager() {
   const load = useCallback(async () => {
     setLoading(true);
     const { ok, data } = await adminFetchJson<{ jobs?: Job[]; error?: string }>(
-      "/api/demo/admin/jobs"
+      adminJobsApiBase()
     );
     if (!ok) {
       setError(data.error ?? "求人の取得に失敗しました");
@@ -46,7 +47,7 @@ export function AdminJobsManager() {
     if (!window.confirm(`「${job.title}」を削除します。よろしいですか？`)) return;
     setDeletingId(job.id);
     const { ok, data } = await adminFetchJson<{ error?: string }>(
-      `/api/demo/admin/jobs/${job.id}`,
+      `${adminJobsApiBase()}/${job.id}`,
       { method: "DELETE" }
     );
     setDeletingId(null);
